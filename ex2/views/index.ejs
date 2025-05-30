@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Eurovisão - Página Principal</title>
+</head>
+<body>
+  <header>
+    <h1>Festival Eurovisão - Edições</h1>
+    <p>Lista de edições disponíveis.</p>
+  </header>
+  <table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Ano</th>
+        <th>Organizador</th>
+        <th>Vencedor</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% edicoes.forEach(function(edicao){ %>
+        <tr>
+          <td><a href="/<%= edicao.id %>"><%= edicao.id %></a></td>
+          <td><%= edicao.anoEdição %></td>
+          <td><a href="/paises/<%= edicao.organizador %>"><%= edicao.organizador %></a></td>
+          <td><a href="/paises/<%= edicao.vencedor %>"><%= edicao.vencedor %></a></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

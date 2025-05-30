@@ -1,0 +1,64 @@
+// models/edicaoModel.js
+const { connectDB } = require('./db');
+
+const getEdicoes = async (filter = {}, projection = { id: 1, anoEdição: 1, organizador: 1, vencedor: 1, musicas: 1, _id: 0 }) => {
+  const db = await connectDB();
+  return db.collection('edicoes').find(filter, { projection }).toArray();
+};
+
+const getEdicaoById = async (id) => {
+  const db = await connectDB();
+  return db.collection('edicoes').findOne({ id });
+};
+
+const insertEdicao = async (edicao) => {
+  const db = await connectDB();
+  return db.collection('edicoes').insertOne(edicao);
+};
+
+const deleteEdicao = async (id) => {
+  const db = await connectDB();
+  return db.collection('edicoes').deleteOne({ id });
+};
+
+const updateEdicao = async (id, updateData) => {
+  const db = await connectDB();
+  return db.collection('edicoes').updateOne({ id }, { $set: updateData });
+};
+
+const getPaisesByPapel = async (papel) => {
+  const db = await connectDB();
+  let agrupamento;
+  if (papel === 'org') {
+    agrupamento = "$organizador";
+  } else if (papel === 'venc') {
+    agrupamento = "$vencedor";
+  } else {
+    throw new Error("Parâmetro 'papel' deve ser 'org' ou 'venc'");
+  }
+  const result = await db.collection('edicoes').aggregate([
+    { $group: { _id: agrupamento, anos: { $addToSet: "$anoEdição" } } },
+    { $sort: { _id: 1 } }
+  ]).toArray();
+  return result.map(item => ({ pais: item._id, anos: item.anos }));
+};
+
+const getInterpretes = async () => {
+  const db = await connectDB();
+  const result = await db.collection('edicoes').aggregate([
+    { $unwind: "$musicas" },
+    { $group: { _id: "$musicas.interprete", pais: { $first: "$musicas.pais" } } },
+    { $sort: { _id: 1 } }
+  ]).toArray();
+  return result.map(item => ({ nome: item._id, pais: item.pais }));
+};
+
+module.exports = {
+  getEdicoes,
+  getEdicaoById,
+  insertEdicao,
+  deleteEdicao,
+  updateEdicao,
+  getPaisesByPapel,
+  getInterpretes
+};

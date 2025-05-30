@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Detalhes da Edição <%= edicao.id %></title>
+</head>
+<body>
+  <header>
+    <h1>Detalhes da Edição <%= edicao.id %></h1>
+  </header>
+  <p><strong>Ano:</strong> <%= edicao.anoEdição %></p>
+  <p><strong>Organizador:</strong> <%= edicao.organizador %></p>
+  <p><strong>Vencedor:</strong> <%= edicao.vencedor %></p>
+  
+  <h2>Músicas</h2>
+  <% if (edicao.musicas && edicao.musicas.length > 0) { %>
+    <table border="1" cellpadding="5" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Intérprete</th>
+          <th>País</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% edicao.musicas.forEach(function(musica){ %>
+          <tr>
+            <td><%= musica.titulo %></td>
+            <td><%= musica.interprete %></td>
+            <td><%= musica.pais %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>Sem músicas registadas.</p>
+  <% } %>
+
+  <p><a href="/">Voltar à Página Principal</a></p>
+</body>
+</html>
